@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-head
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-by-header: "vip"
+    nginx.ingress.kubernetes.io/canary-by-header-value: "10"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "www.newszz.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: nginx-head
+            port:
+              number: 50000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-rewrite
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "www.newszz.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: nginx-num
+            port:
+              number: 50000
